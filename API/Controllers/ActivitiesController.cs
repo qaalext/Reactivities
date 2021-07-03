@@ -6,6 +6,7 @@ using Application;
 using Application.Activities;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -21,7 +22,8 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new List.Query()));
         }
-
+        
+        //[Authorize] // due to the new setup from the startup we don't need this anymore
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAcivity(Guid id) 
         {
