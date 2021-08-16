@@ -1,7 +1,9 @@
 using System.Text;
 using API.Services;
 using Domain;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +18,9 @@ namespace API.Extensions
         // this class is called in the startup class
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddIdentityCore<AppUser>(opt => {
-                
+            services.AddIdentityCore<AppUser>(opt =>
+            {
+
                 opt.Password.RequireNonAlphanumeric = false;
 
             }
@@ -29,7 +32,8 @@ namespace API.Extensions
 
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt => {
+            .AddJwtBearer(opt =>
+            {
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -39,7 +43,15 @@ namespace API.Extensions
                 };
 
             });
-            
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("IsActivityHost", policy =>
+                {
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>(); //means to last as long as the method is running (authorization policy one)
+            // with AddTransient we can use attributes on our endpoints to add our policies opt.AddPolicy("IsActivityHost",
             services.AddScoped<TokenService>();
             return services;
         }
