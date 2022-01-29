@@ -10,7 +10,8 @@ namespace Domain
         public ICollection<ActivityAttendee> Activities { get; set; }
         
         public ICollection<Photo> Photos { get; set; }
+        public ICollection<UserFollowing> Followings { get; set; } // current profiles of users following the user is following
         
-        
+        public ICollection<UserFollowing> Followers { get; set; } // current profiles of users that are following the user
     }
 }
