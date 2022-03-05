@@ -64,14 +64,21 @@ namespace API
             app.UseReferrerPolicy(opt => opt.NoReferrer());
             app.UseXXssProtection(opt => opt.EnabledWithBlockMode());
             app.UseXfo(opt => opt.Deny());
+
+            //usecsp iti poate crapa fb pe local daca nu sunt policy urile setate, foloseste usecspreporting si adauga policy urile
             app.UseCsp(opt => opt
             .BlockAllMixedContent()
-            .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com/"))
+            .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com/",
+             "sha256-yChqzBduCCi4o4xdbXRXh4U/t1rP4UUUMJt+rB+ylUI=",
+             "sha256-r3x6D0yBZdyG8FpooR5ZxcsLuwuJ+pSQ/80YzwXS5IU="))
             .FontSources(s => s.Self().CustomSources("https://fonts.gstatic.com", "data:"))
             .FormActions(s => s.Self())
             .FrameAncestors(s => s.Self())
-            .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com"))
-            .ScriptSources(s => s.Self().CustomSources("sha256-Vc2vYH2FgDRnl6+I1cQZWRBn/goi99XlJKDlfY8EqtM="))
+            .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com",
+             "https://www.facebook.com", "data:", "https://platform-lookaside.fbsbx.com"))
+            .ScriptSources(s => s.Self().CustomSources("sha256-Vc2vYH2FgDRnl6+I1cQZWRBn/goi99XlJKDlfY8EqtM=",
+             "https://connect.facebook.net", 
+             "sha256-2taMchLhAg9J4LO0BiT1qneM7fWDDZe7AnAwIpJnGkA="))
 
             
             );
@@ -91,7 +98,7 @@ namespace API
 
             }
 
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
